@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+        }
+        #mediaList {
+            margin: 20px 0;
+        }
+        .mediaItem {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #fff;
+        }
+        .available {
+            color: green;
+        }
+        .unavailable {
+            color: red;
+        }
+        button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Library Management System</h1>
+    <div>
+        <input type="text" id="searchInput" placeholder="Search media...">
+        <button onclick="searchMedia()">Search</button>
+    </div>
+    
+    <div id="mediaList"></div>
+
+    <script>
+        // Sample media collection
+        const mediaCollection = [
+            { title: "The Great Gatsby", available: true },
+            { title: "1984", available: true },
+            { title: "To Kill a Mockingbird", available: true },
+        ];
+
+        function displayMedia() {
+            const mediaList = document.getElementById('mediaList');
+            mediaList.innerHTML = ''; // Clear previous content
+            mediaCollection.forEach(media => {
+                const mediaItem = document.createElement('div');
+                mediaItem.className = 'mediaItem';
+                mediaItem.innerHTML = `
+                    <strong>${media.title}</strong> - 
+                    <span class="${media.available ? 'available' : 'unavailable'}">
+                        ${media.available ? 'Available' : 'Unavailable'}
+                    </span>
+                    <button onclick="borrowMedia('${media.title}')">Borrow</button>
+                    <button onclick="returnMedia('${media.title}')">Return</button>
+                `;
+                mediaList.appendChild(mediaItem);
+            });
+        }
+
+        function searchMedia() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const mediaList = document.getElementById('mediaList');
+            mediaList.innerHTML = ''; // Clear previous content
+            mediaCollection.forEach(media => {
+                if (media.title.toLowerCase().includes(searchInput)) {
+                    const mediaItem = document.createElement('div');
+                    mediaItem.className = 'mediaItem';
+                    mediaItem.innerHTML = `
+                        <strong>${media.title}</strong> - 
+                        <span class="${media.available ? 'available' : 'unavailable'}">
+                            ${media.available ? 'Available' : 'Unavailable'}
+                        </span>
+                        <button onclick="borrowMedia('${media.title}')">Borrow</button>
+                        <button onclick="returnMedia('${media.title}')">Return</button>
+                    `;
+                    mediaList.appendChild(mediaItem);
+                }
+            });
+            if (mediaList.innerHTML === '') {
+                mediaList.innerHTML = '<div>No media found.</div>';
+            }
+        }
+
+        function borrowMedia(title) {
+            const media = mediaCollection.find(m => m.title === title);
+            if (media && media.available) {
+                media.available = false;
+                alert(`You have borrowed "${title}".`);
+                displayMedia();
+            } else {
+                alert(`"${title}" is currently unavailable.`);
+            }
+        }
+
+        function returnMedia(title) {
+            const media = mediaCollection.find(m => m.title === title);
+            if (media && !media.available) {
+                media.available = true;
+                alert(`You have returned "${title}".`);
+                displayMedia();
+            } else {
+                alert(`"${title}" was not borrowed.`);
+            }
+        }
+
+        // Initial display of media
+        displayMedia();
+    </script>
+</body>
+</html>
